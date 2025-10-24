@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yatu's Fast Food</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-red">
+        <div class="site-width">
+            <header>
+                <h1>Gup Shup Adda</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="mobile-menu" id="mobileMenu">
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#menu">Menu</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+        </div>
+    </div>
+
+    <div class="hero-slider">
+        <div class="slide active" style="background-image: url('image/jonathan-borba.jpg');">
+            <h2>Delicious • Fresh • Fast</h2>
+        </div>
+
+        <div class="slide" style="background-image: url('image/momo.jpg');">
+            <h2>Hot & Crispy Meals for You</h2>
+        </div>
+
+        <div class="slide" style="background-image: url('image/noodels.jpg');">
+            <h2>Made with Love ❤️</h2>
+        </div>
+    </div>
+
+    <div class="ptb60">
+        <div class="menu" id="menu">
+            <h2>Our Popular Items</h2>
+            <div class="menu-items">
+                <div class="item">
+                    <img src="image/noodels-1.jpg" alt="Burger">
+                    <h4>Cheese Burger</h4>
+                    <p>Juicy beef patty with melted cheese and veggies.</p>
+                    <button class="order-btn" onclick="addToOrder('Cheese Burger', 60)">Order Now</button>
+                </div>
+                <div class="item">
+                    <img src="image/noodels-1.jpg" alt="Pizza">
+                    <h4>Veg MoMo</h4>
+                    <p>Loaded with cheese and fresh vegetables.</p>
+                    <button class="order-btn" onclick="addToOrder('Veg Momo', 40)">Order Now</button>
+                </div>
+                <div class="item">
+                    <img src="image/noodels-1.jpg" alt="French Fries">
+                    <h4>French Fries</h4>
+                    <p>Crispy, golden, and perfectly salted fries.</p>
+                    <button class="order-btn" onclick="addToOrder('French Fries', 50)">Order Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-lgt">
+        <div class="ptb60">
+            <div class="flx">
+                <div class="col">
+                    <div class="contact" id="contact">
+                        <h2>Contact Us</h2>
+                        <div class="flx-box">
+                            <img src="image/ph-ft.svg" alt="phone" width="30px">
+                            <p>
+
+                                <a href="tel:+91 98765 43210">+91 98765 43210</a>
+                            </p>
+                        </div>
+                        <div class="flx-box">
+                            <img src="image/add-ft.svg" alt="address" width="30px">
+                            <p>
+
+                                <a href="">Main Market, Dehradun</a>
+                            </p>
+                        </div>
+                        <div class="flx-box">
+                            <img src="image/clock-circle-dental.svg" alt="time" width="30px">
+                            <p>Open: 10 AM - 11 PM</p>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.398861428015!2d78.03219137455712!3d30.316494509511745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390929b6b2c9d9c1%3A0x7d3c8b6f63944bdb!2sDehradun!5e0!3m2!1sen!2sin!4v1707755734092!5m2!1sen!2sin"
+                        allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+    <footer>
+        <p>© 2025 Yatu's Fast Food. All Rights Reserved.</p>
+    </footer>
+
+    <!-- QR Popup -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h3>Your Order</h3>
+            <ul id="orderList"></ul>
+
+            <h3 id="totalAmount" style="margin: 15px 0;">Total: ₹0</h3>
+
+            <button class="order-btn" id="payBtn" onclick="showQRCode()">Proceed to Pay</button>
+
+            <div id="qrSection" style="display:none; margin-top:20px;">
+                <h3>Pay & Confirm Order</h3>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourupi@upi&pn=YatuFastFood"
+                    alt="QR Code">
+                <p>Scan & Pay using any UPI app</p>
+            </div>
+
+            <button class="close-btn" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+
+<script>
+        let orderList = {}; // Store {itemName: {qty, price}}
+
+        function addToOrder(itemName, price) {
+            if (orderList[itemName]) {
+                orderList[itemName].qty += 1;
+            } else {
+                orderList[itemName] = { qty: 1, price: price };
+            }
+            updateOrderList();
+            openPopup();
+        }
+
+        function updateOrderList() {
+            const orderListElement = document.getElementById("orderList");
+            const totalElement = document.getElementById("totalAmount");
+            orderListElement.innerHTML = ''; // Clear old list
+
+            let total = 0;
+
+            for (let item in orderList) {
+                const itemData = orderList[item];
+                const itemTotal = itemData.qty * itemData.price;
+                total += itemTotal;
+
+                const li = document.createElement('li');
+                li.style.marginBottom = "10px";
+                li.innerHTML = `
+      <strong>${item}</strong> - ₹${itemData.price} each
+      <div style="display:flex; align-items:center; gap:10px; justify-content:center; margin-top:5px;">
+        <button onclick="changeQuantity('${item}', -1)" style="padding:5px 10px;">-</button>
+        <span>${itemData.qty}</span>
+        <button onclick="changeQuantity('${item}', 1)" style="padding:5px 10px;">+</button>
+        <span style="margin-left:10px;">₹${itemTotal}</span>
+      </div>
+ `;
+                orderListElement.appendChild(li);
+            }
+
+            totalElement.textContent = `Total: ₹${total}`;
+        }
+
+        function changeQuantity(item, change) {
+            orderList[item].qty += change;
+            if (orderList[item].qty <= 0) {
+                delete orderList[item];
+            }
+            updateOrderList();
+        }
+
+        function showQRCode() {
+            if (Object.keys(orderList).length === 0) {
+                alert("Please add at least one item before payment!");
+                return;
+            }
+            document.getElementById("qrSection").style.display = "block";
+        }
+
+        function openPopup() {
+            document.getElementById("popup").style.display = "flex";
+            document.getElementById("qrSection").style.display = "none"; // hide QR until user clicks Proceed
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+    </script>
+
+
+    <!-- crousel -->
+    <script>
+        let slides = document.querySelectorAll('.hero-slider .slide');
+        let currentSlide = 0;
+
+        function showNextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Change image every 4 seconds
+        setInterval(showNextSlide, 4000);
+    </script>
+
+    <script>
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const menu = document.getElementById('mobileMenu');
+            hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
+
+        }
+    </script>
+
+    <!-- Add toggle menu script  -->
+
+    <script>
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('overlay');
+
+            hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('overlay');
+
+            hamburger.classList.remove('active');
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+    </script>
+
+    
+
+
+
+</body>
+
+</html>
